@@ -86,3 +86,26 @@ body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--t
   .download-box h2 { font-size: 1.6rem; }
   .footer-content { flex-direction: column; text-align: center; }
 }
+
+.admin-page { min-height: 100vh; padding: 72px 24px; background: #f2f4ee; }
+.admin-shell { max-width: 680px; margin: 0 auto; background: white; padding: 44px; border: 1px solid rgba(45,106,79,0.12); box-shadow: var(--shadow-lg); }
+.admin-kicker { color: var(--primary); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+.admin-shell h1 { margin: 8px 0 10px; color: var(--primary-dark); font-size: 2.2rem; line-height: 1.15; }
+.admin-lede { color: var(--text-light); margin-bottom: 28px; }
+.admin-form { display: grid; gap: 18px; }
+.admin-form label { display: grid; gap: 7px; color: var(--primary-dark); font-weight: 600; font-size: 0.9rem; }
+.admin-form label span { color: var(--text-muted); font-weight: 400; }
+.admin-form input, .admin-form select, .admin-form textarea { width: 100%; border: 1px solid rgba(45,106,79,0.2); border-radius: 8px; padding: 12px 13px; font: inherit; color: var(--text); background: #fbfcf8; }
+.admin-form textarea { resize: vertical; }
+.admin-form input:focus, .admin-form select:focus, .admin-form textarea:focus { outline: 2px solid rgba(82,183,136,0.35); border-color: var(--primary-light); }
+.admin-submit { border: 0; border-radius: 8px; padding: 13px 18px; background: var(--primary); color: white; font: inherit; font-weight: 700; cursor: pointer; }
+.admin-submit:disabled { cursor: wait; opacity: 0.65; }
+.admin-result { margin-top: 20px; padding: 13px 15px; border-radius: 8px; font-weight: 600; }
+.admin-result.success { color: #17633f; background: #e5f4ea; }
+.admin-result.error { color: #9c2d20; background: #fde9e5; }
+
+@media (max-width: 600px) {
+  .admin-page { padding: 24px 14px; }
+  .admin-shell { padding: 28px 20px; }
+  .admin-shell h1 { font-size: 1.8rem; }
+}

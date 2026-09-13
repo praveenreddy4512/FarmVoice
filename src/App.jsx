@@ -6,6 +6,7 @@ import HowItWorks from './components/HowItWorks'
 import Download from './components/Download'
 import Footer from './components/Footer'
 import PrivacyPolicy from './components/PrivacyPolicy'
+import AdminNotifications from './components/AdminNotifications'
 
 function HomePage() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/admin/notifications" element={<AdminNotifications />} />
         </Routes>
       </div>
     </Router>
