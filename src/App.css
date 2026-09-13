@@ -91,6 +91,8 @@ body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--t
 .admin-shell { max-width: 680px; margin: 0 auto; background: white; padding: 44px; border: 1px solid rgba(45,106,79,0.12); box-shadow: var(--shadow-lg); }
 .admin-kicker { color: var(--primary); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
 .admin-shell h1 { margin: 8px 0 10px; color: var(--primary-dark); font-size: 2.2rem; line-height: 1.15; }
+.admin-heading-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+.admin-logout { border: 1px solid rgba(45,106,79,0.25); border-radius: 8px; padding: 9px 12px; background: white; color: var(--primary-dark); font: inherit; font-weight: 600; cursor: pointer; white-space: nowrap; }
 .admin-lede { color: var(--text-light); margin-bottom: 28px; }
 .admin-form { display: grid; gap: 18px; }
 .admin-form label { display: grid; gap: 7px; color: var(--primary-dark); font-weight: 600; font-size: 0.9rem; }

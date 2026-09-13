@@ -3,13 +3,43 @@ import { useState } from 'react'
 const API_BASE = import.meta.env.VITE_BACKEND_URL || 'https://farmer-app-backend-flax.vercel.app'
 
 function AdminNotifications() {
-  const [adminKey, setAdminKey] = useState('')
+  const [sessionToken, setSessionToken] = useState(() => sessionStorage.getItem('farmvoice_admin_session') || '')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
   const [type, setType] = useState('general')
   const [profileIds, setProfileIds] = useState('')
   const [result, setResult] = useState(null)
   const [sending, setSending] = useState(false)
+  const [loggingIn, setLoggingIn] = useState(false)
+
+  async function login(event) {
+    event.preventDefault()
+    setLoggingIn(true)
+    setResult(null)
+    try {
+      const response = await fetch(`${API_BASE}/api/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload.error?.message || 'Login failed')
+      sessionStorage.setItem('farmvoice_admin_session', payload.token)
+      setSessionToken(payload.token)
+      setPassword('')
+    } catch (error) {
+      setResult({ ok: false, message: error.message })
+    } finally {
+      setLoggingIn(false)
+    }
+  }
+
+  function logout() {
+    sessionStorage.removeItem('farmvoice_admin_session')
+    setSessionToken('')
+  }
 
   async function sendNotification(event) {
     event.preventDefault()
@@ -24,7 +54,7 @@ function AdminNotifications() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-admin-key': adminKey,
+          Authorization: `Bearer ${sessionToken}`,
         },
         body: JSON.stringify({
           title,
@@ -34,6 +64,10 @@ function AdminNotifications() {
         }),
       })
       const payload = await response.json()
+      if (response.status === 401) {
+        logout()
+        throw new Error('Your admin session expired. Please sign in again.')
+      }
       if (!response.ok) throw new Error(payload.error?.message || 'Send failed')
       setResult({ ok: true, message: `Created ${payload.created} notification(s); sent to ${payload.sent} device(s).` })
       setTitle('')
@@ -49,13 +83,34 @@ function AdminNotifications() {
     <main className="admin-page">
       <div className="admin-shell">
         <p className="admin-kicker">FarmVoice operations</p>
-        <h1>Send a farmer notification</h1>
-        <p className="admin-lede">Broadcast an alert to every registered device, or target specific farmer profile IDs.</p>
-        <form className="admin-form" onSubmit={sendNotification}>
-          <label>
-            Admin key
-            <input type="password" value={adminKey} onChange={(event) => setAdminKey(event.target.value)} required />
-          </label>
+        {!sessionToken ? (
+          <>
+            <h1>Admin sign in</h1>
+            <p className="admin-lede">Sign in to send messages to FarmVoice farmers.</p>
+            <form className="admin-form" onSubmit={login}>
+              <label>
+                Username
+                <input value={username} onChange={(event) => setUsername(event.target.value)} autoComplete="username" required />
+              </label>
+              <label>
+                Password
+                <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" required />
+              </label>
+              <button className="admin-submit" type="submit" disabled={loggingIn}>
+                {loggingIn ? 'Signing in...' : 'Sign in'}
+              </button>
+            </form>
+          </>
+        ) : (
+          <>
+            <div className="admin-heading-row">
+              <div>
+                <h1>Send a farmer notification</h1>
+                <p className="admin-lede">Broadcast an alert to every registered device, or target specific farmer profile IDs.</p>
+              </div>
+              <button className="admin-logout" type="button" onClick={logout}>Sign out</button>
+            </div>
+            <form className="admin-form" onSubmit={sendNotification}>
           <label>
             Notification type
             <select value={type} onChange={(event) => setType(event.target.value)}>
@@ -81,7 +136,9 @@ function AdminNotifications() {
           <button className="admin-submit" type="submit" disabled={sending}>
             {sending ? 'Sending...' : 'Send notification'}
           </button>
-        </form>
+            </form>
+          </>
+        )}
         {result && <p className={result.ok ? 'admin-result success' : 'admin-result error'}>{result.message}</p>}
       </div>
     </main>
